@@ -1,35 +1,35 @@
-import time
-from sys import stdin
+from collections import deque
 
-WALL_CHARACTER = ord("#")
+WALL_CHARACTER = "#"
 DIRECTIONS = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 
 
 def bfs(building, visited, i, j):
     n = len(building)
     m = len(building[0])
-    stack = [(i, j)]
+    queue = deque([(i, j)])
     visited[i][j] = True
 
-    while len(stack) > 0:
-        i, j = stack.pop()
+    while len(queue) > 0:
+        i, j = queue.popleft()
 
         for direction in DIRECTIONS:
             a, b = i + direction[0], j + direction[1]
             if a < 0 or a >= n or b < 0 or b >= m or visited[a][b] or building[a][b] == WALL_CHARACTER:
                 continue
 
-            stack.append((a, b))
+            queue.append((a, b))
             visited[a][b] = True
 
 
 if __name__ == "__main__":
-    n, m = [int(i) for i in stdin.buffer.readline().split()]
-    building = [''] * n
-    visited = [[False] * m for _ in range(n)]
+    n, m = [int(i) for i in input().split()]
+    building = []
+    visited = []
 
-    for i in range(n):
-        building[i] = stdin.buffer.readline().replace(b'\n', b'')
+    for _ in range(n):
+        building += [input()]
+        visited += [[False] * m]
 
     rooms_count = 0
     for i in range(n):
@@ -38,7 +38,6 @@ if __name__ == "__main__":
                 continue
 
             rooms_count += 1
-            start = time.time_ns()
             bfs(building, visited, i, j)
 
     print(rooms_count)
